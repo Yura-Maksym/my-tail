@@ -5,7 +5,8 @@ on:
     types: [created]
 
 jobs:
-  deploy:
+  # --- Завдання 1: Наша звичайна публікація ---
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -28,3 +29,15 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
+
+  # --- Завдання 2: Демонстрація, яка чекає на Завдання 1 ---
+  hello-demonstration:
+    runs-on: ubuntu-latest
+
+    # ВАЖЛИВО: Цей рядок каже GitHub чекати,
+    # доки 'build-and-publish' не завершиться успішно.
+    needs: build-and-publish
+
+    steps:
+      - name: Вивести привітання
+        run: echo "Привіт! Пакет було щойно успішно опубліковано."
